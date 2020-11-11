@@ -19,8 +19,6 @@
 // THE SOFTWARE.
 
 import {combineReducers, createStore, applyMiddleware, compose} from 'redux';
-import {routerReducer, routerMiddleware} from 'react-router-redux';
-import {browserHistory} from 'react-router';
 import {enhanceReduxMiddleware} from 'kepler.gl/middleware';
 import thunk from 'redux-thunk';
 // eslint-disable-next-line no-unused-vars
@@ -29,11 +27,10 @@ import window from 'global/window';
 import demoReducer from './reducers/index';
 
 const reducers = combineReducers({
-  demo: demoReducer,
-  routing: routerReducer
+  demo: demoReducer
 });
 
-export const middlewares = enhanceReduxMiddleware([thunk, routerMiddleware(browserHistory)]);
+export const middlewares = enhanceReduxMiddleware([thunk]);
 
 export const enhancers = [applyMiddleware(...middlewares)];
 
