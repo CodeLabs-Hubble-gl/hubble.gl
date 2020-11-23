@@ -23,23 +23,34 @@ import DeckGL from '@deck.gl/react';
 
 // import {layerConfigChange} from 'kepler.gl/actions';
 
-import {MapView, OrthographicView} from '@deck.gl/core';
-import {TileLayer} from '@deck.gl/geo-layers';
-import {BitmapLayer} from '@deck.gl/layers';
+import {MapView /* OrthographicView*/} from '@deck.gl/core';
+// import {TileLayer} from '@deck.gl/geo-layers';
+// import {BitmapLayer} from '@deck.gl/layers';
+import {StaticMap} from 'react-map-gl';
+import {MapboxLayer} from '@deck.gl/mapbox';
+import {useNextFrame} from '@hubble.gl/react';
 
 export class ExportVideoPanelPreview extends Component {
   constructor(props) {
     super(props);
+    const user = this.props.mapData.mapStyle.bottomMapStyle.owner;
+    const mapId = this.props.mapData.mapStyle.bottomMapStyle.id;
+
+    this.mapRef = React.createRef();
+    this.deckRef = React.createRef();
 
     this.state = {
       timestamp: {
         latitude: 47.65,
         longitude: 7
-      }
+      },
+      mapStyle: `mapbox://styles/${user}/${mapId}`,
+      glContext: undefined
     };
 
     this._onLayerSetDomain = this._onLayerSetDomain.bind(this);
     this._renderLayer = this._renderLayer.bind(this);
+    this.onMapLoad = this.onMapLoad.bind(this);
   }
 
   componentDidMount() {
@@ -111,7 +122,15 @@ export class ExportVideoPanelPreview extends Component {
     }
   }
 
-  //   interactionConfig,
+  onMapLoad() {
+    // console.log('this.mapRef', this.mapRef);
+    // console.log('this.deckRef', this.deckRef);
+    const map = this.mapRef.current.getMap();
+    const deck = this.deckRef.current.deck;
+    map.addLayer(new MapboxLayer({id: 'my-deck', deck}));
+    map.on('render', () => this.props.adapter.onAfterRender(useNextFrame()));
+  }
+
   render() {
     // const mapStyle = this.mapData.mapStyle;
     const mapState = this.props.mapData.mapState;
@@ -145,32 +164,32 @@ export class ExportVideoPanelPreview extends Component {
     //   id: 'timestamp'
     // });
 
-    const tileLayer = new TileLayer({
-      autoHighlight: true,
-      highlightColor: [60, 60, 60, 40],
-      opacity: 1,
-      // https://wiki.openstreetmap.org/wiki/Zoom_levels
-      minZoom: 0,
-      maxZoom: 19,
-      tileSize: 256,
-      // getTileData: ({x, y, z}) => {return load(`http://d90016be4e11c76b57d0311404f546f06afbae25.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`);},
+    // const tileLayer = new TileLayer({
+    //   autoHighlight: true,
+    //   highlightColor: [60, 60, 60, 40],
+    //   opacity: 1,
+    //   // https://wiki.openstreetmap.org/wiki/Zoom_levels
+    //   minZoom: 0,
+    //   maxZoom: 19,
+    //   tileSize: 256,
+    //   // getTileData: ({x, y, z}) => {return load(`http://d90016be4e11c76b57d0311404f546f06afbae25.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`);},
 
-      data: [
-        `http://d90016be4e11c76b57d0311404f546f06afbae25.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png`
-      ],
+    //   data: [
+    //     `http://d90016be4e11c76b57d0311404f546f06afbae25.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png`
+    //   ],
 
-      renderSubLayers: props => {
-        const {
-          bbox: {west, south, east, north}
-        } = props.tile;
+    //   renderSubLayers: props => {
+    //     const {
+    //       bbox: {west, south, east, north}
+    //     } = props.tile;
 
-        return new BitmapLayer(props, {
-          data: [],
-          image: props.data,
-          bounds: [west, south, east, north]
-        });
-      }
-    });
+    //     return new BitmapLayer(props, {
+    //       data: [],
+    //       image: props.data,
+    //       bounds: [west, south, east, north]
+    //     });
+    //   }
+    // });
 
     // TODO refactor this. Layers are reverse, filtered, etc. only to be redefined later
     // TODO FIX tileLayer & textlayer need to be added manually
@@ -197,7 +216,7 @@ export class ExportVideoPanelPreview extends Component {
     // deckGlLayers[1] = deckGlLayers[0];
     // deckGlLayers[0] = tileLayer;
 
-    deckGlLayers.unshift(tileLayer);
+    // deckGlLayers.unshift(tileLayer); // TODO I think I need to use this?
 
     // var i;
     // for (i = 0; i < deckGlLayers.length; i++) {
@@ -220,21 +239,21 @@ export class ExportVideoPanelPreview extends Component {
 
     const style = {
       position: 'relative',
-      width: this.props.resolution[0],
-      height: this.props.resolution[1]
+      // width: this.props.resolution[0],
+      // height: this.props.resolution[1],
+      objectFit: 'fill'
     };
 
     return (
       // TODO add ternary logic for width/height that'll set aspect ratio of preview in deck-canvas. Or can it be dynamically scaled?
       // maybe object-fit? https://www.w3schools.com/css/css3_object-fit.asp
+      // Can't get access to canvas elements within DeckGL component. Wrapper within
       <div
         id="deck-canvas"
         style={{width: '480px', height: '460px', position: 'relative', overflow: 'auto'}}
       >
         <DeckGL
-          ref={r => {
-            this.deckgl = {current: r};
-          }}
+          ref={this.deckRef}
           viewState={mapState}
           id="default-deckgl-overlay2"
           layers={deckGlLayers}
@@ -242,24 +261,32 @@ export class ExportVideoPanelPreview extends Component {
           useDevicePixels={useDevicePixels}
           style={style}
           controller={true}
+          onWebGLInitialized={gl => this.setState({glContext: gl})}
           onViewStateChange={({viewState: vs}) => {
             this.props.setViewState(vs);
           }}
           views={[
-            new MapView({id: 'MapView', repeat: true}),
-            new OrthographicView({id: 'timestamp'})
+            new MapView({id: 'MapView', repeat: true})
+            // new OrthographicView({id: 'timestamp'})
           ]} // Not yet
           /* onBeforeRender={this._onBeforeRender} // Not yet
                       onHover={visStateActions.onLayerHover} // Not yet
-                      onClick={visStateActions.onLayerClick}*/ {...this.props.adapter.getProps(
-            this.deckgl,
-            () => {},
-            () => {
-              this.forceUpdate();
-            }
-          )}
+                      onClick={visStateActions.onLayerClick}*/
+
+          {...this.props.adapter.getProps(this.deckRef, () => {}, () => {})}
           // {...this.props.adapter._updateFromProps()}
-        />
+        >
+          {this.state.glContext && (
+            <StaticMap
+              ref={this.mapRef}
+              reuseMaps
+              mapStyle={this.state.mapStyle}
+              preventStyleDiffing={true}
+              gl={this.state.glContext}
+              onLoad={this.onMapLoad}
+            />
+          )}
+        </DeckGL>
       </div>
     );
   }

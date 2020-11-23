@@ -44,8 +44,8 @@ export const StyledDropdownSelect = styled.div.attrs({
     props.inputTheme === 'secondary'
       ? props.theme.secondaryInput
       : props.inputTheme === 'light'
-      ? props.theme.inputLT
-      : props.theme.input};
+        ? props.theme.inputLT
+        : props.theme.input};
 
   height: ${props =>
     props.size === 'small' ? props.theme.inputBoxHeightSmall : props.theme.inputBoxHeight};
@@ -60,10 +60,10 @@ const DropdownSelectValue = styled.span`
     props.hasPlaceholder && props.inputTheme === 'light'
       ? props.theme.selectColorPlaceHolderLT
       : props.hasPlaceholder
-      ? props.theme.selectColorPlaceHolder
-      : props.inputTheme === 'light'
-      ? props.theme.selectColorLT
-      : props.theme.selectColor};
+        ? props.theme.selectColorPlaceHolder
+        : props.inputTheme === 'light'
+          ? props.theme.selectColorLT
+          : props.theme.selectColor};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

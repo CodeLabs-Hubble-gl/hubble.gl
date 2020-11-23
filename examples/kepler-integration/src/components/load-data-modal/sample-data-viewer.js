@@ -135,17 +135,15 @@ export default class SampleMapGallery extends Component {
           <LoadingDialog size={64} />
         ) : (
           <StyledSampleGallery className="sample-map-gallery">
-            {sampleMaps
-              .filter(sp => sp.visible)
-              .map(sp => (
-                <SampleMap
-                  id={sp.id}
-                  sample={sp}
-                  key={sp.id}
-                  onClick={() => onLoadSample(sp)}
-                  locale={locale}
-                />
-              ))}
+            {sampleMaps.filter(sp => sp.visible).map(sp => (
+              <SampleMap
+                id={sp.id}
+                sample={sp}
+                key={sp.id}
+                onClick={() => onLoadSample(sp)}
+                locale={locale}
+              />
+            ))}
           </StyledSampleGallery>
         )}
       </div>
