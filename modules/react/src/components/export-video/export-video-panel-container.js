@@ -119,7 +119,7 @@ export class ExportVideoPanelContainer extends Component {
     return new DeckScene({
       animationLoop,
       keyframes,
-      lengthMs: this.state.durationMs, // TODO change to 5000 later. 1000 for dev testing
+      lengthMs: this.state.durationMs,
       width: canvasWidth,
       height: canvasHeight,
       currentCamera
@@ -140,10 +140,8 @@ export class ExportVideoPanelContainer extends Component {
     this.setState({
       fileName: name.target.value
     });
-    // setFileNameDeckAdapter(name.target.value);
   }
   setQuality(resolution) {
-    // this.forceUpdate();
     // NOTE: resolution parameter is string user selects ex: 'Good (540p)'\
     const {adapter, encoderSettings} = this.state;
 
@@ -177,26 +175,11 @@ export class ExportVideoPanelContainer extends Component {
         }
         // TODO Add other encoders as needed. Not yet implemented
       }
-      // adapter: new DeckAdapter(this.getDeckScene)
     });
-
-    // const canvas = document.getElementById('default-deckgl-overlay2')
-    // function repeatOften() {
-    //   // Do whatever
-    //   requestAnimationFrame(repeatOften);
-    // }
-    // requestAnimationFrame(repeatOften);
-
-    // const onStop = () => {};
-    // adapter.render(PreviewEncoder, encoderSettings, onStop, this.getCameraKeyframes);
-    // this.forceUpdate();
-    // console.log('Reached setQuality');
   }
 
   onPreviewVideo() {
     const {adapter, encoderSettings} = this.state;
-
-    // console.log('this.state.canvasWidth', this.state.canvasWidth);
     const onStop = () => {};
     adapter.render(PreviewEncoder, encoderSettings, onStop, this.getCameraKeyframes);
   }

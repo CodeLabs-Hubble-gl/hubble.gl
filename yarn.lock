@@ -10153,7 +10153,7 @@ react-map-gl-draw@0.14.8:
     uuid "^3.3.2"
     viewport-mercator-project ">=5.0.0"
 
-react-map-gl@^5.0.3:
+react-map-gl@^5.0.3, react-map-gl@^5.2.10:
   version "5.2.10"
   resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-5.2.10.tgz#2e7cf92bb99d528068069cb4b29226c8035c58af"
   integrity sha512-Mjb0+obehBCjCdfWDmAy51PfsWFW4pIDkgm2RvQLuQoRD0zF4W+vCAAZkV2pgCtA9akGmOcFKQki4H1+Noyzag==
