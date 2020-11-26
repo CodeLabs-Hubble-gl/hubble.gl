@@ -20,12 +20,6 @@
 
 import React, {Component} from 'react';
 import DeckGL from '@deck.gl/react';
-
-// import {layerConfigChange} from 'kepler.gl/actions';
-
-// import {MapView /* OrthographicView*/} from '@deck.gl/core';
-// import {TileLayer} from '@deck.gl/geo-layers';
-// import {BitmapLayer} from '@deck.gl/layers';
 import {StaticMap} from 'react-map-gl';
 import {MapboxLayer} from '@deck.gl/mapbox';
 
@@ -43,7 +37,7 @@ export class ExportVideoPanelPreview extends Component {
         latitude: 47.65,
         longitude: 7
       },
-      mapStyle: `mapbox://styles/${user}/${mapId}`,
+      mapStyle: `mapbox://styles/${user}/${mapId}`, // Unsure if mapStyle would ever change but allowing it just in case
       glContext: undefined
     };
 
@@ -117,7 +111,6 @@ export class ExportVideoPanelPreview extends Component {
     let deckGlLayers = [];
 
     // TODO refactor this. Layers are reverse, filtered, etc. only to be redefined later
-    // TODO FIX tileLayer & textlayer need to be added manually
     // wait until data is ready before render data layers
     if (layerOrder && layerOrder.length) {
       // last layer render first
@@ -166,7 +159,7 @@ export class ExportVideoPanelPreview extends Component {
           {this.state.glContext && (
             <StaticMap
               ref={this.mapRef}
-              reuseMaps
+              // reuseMaps // Part of default example but causes modal to lose Mapbox tile layer?
               mapStyle={this.state.mapStyle}
               preventStyleDiffing={true}
               gl={this.state.glContext}
