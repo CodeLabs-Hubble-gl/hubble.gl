@@ -38,8 +38,7 @@ export class ExportVideoPanelPreview extends Component {
         longitude: 7
       },
       mapStyle: `mapbox://styles/${user}/${mapId}`, // Unsure if mapStyle would ever change but allowing it just in case
-      glContext: undefined,
-      viewState: this.props.mapData.mapState
+      glContext: undefined
     };
 
     this._onLayerSetDomain = this._onLayerSetDomain.bind(this);
@@ -140,17 +139,14 @@ export class ExportVideoPanelPreview extends Component {
       >
         <DeckGL
           ref={this.deckRef}
-          viewState={this.state.viewState}
+          viewState={this.props.viewState}
           id="default-deckgl-overlay2"
           layers={deckGlLayers}
           style={style}
           controller={true}
           glOptions={{stencil: true}}
           onWebGLInitialized={gl => this.setState({glContext: gl})}
-          // onViewStateChange={vs => {console.log("vs", vs)}}
-          onViewStateChange={vs => {
-            this.setState({viewState: vs.viewState});
-          }}
+          onViewStateChange={this.props.setViewState}
           /* onBeforeRender={this._onBeforeRender} // Not yet
                       onHover={visStateActions.onLayerHover} // Not yet
                       onClick={visStateActions.onLayerClick}*/

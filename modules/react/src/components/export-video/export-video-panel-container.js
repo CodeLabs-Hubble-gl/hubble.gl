@@ -211,7 +211,15 @@ export class ExportVideoPanelContainer extends Component {
       resolution: this.state.quality
     };
 
-    const {adapter, durationMs, encoderSettings, mediaType, canvasWidth, canvasHeight} = this.state;
+    const {
+      adapter,
+      durationMs,
+      encoderSettings,
+      mediaType,
+      canvasWidth,
+      canvasHeight,
+      viewState
+    } = this.state;
     return (
       <ExportVideoPanel
         // UI Props
@@ -219,9 +227,10 @@ export class ExportVideoPanelContainer extends Component {
         handleClose={handleClose}
         // Map Props
         mapData={mapData}
-        // setViewState={viewState => {
-        //   this.setState({viewState});
-        // }} // Unsure what this was for. Unneeded for draggability, which I think this was trying to pass down? 'setViewState' is missing if commented out
+        viewState={viewState}
+        setViewState={vs => {
+          this.setState({viewState: vs.viewState});
+        }}
         // Settings Props
         settingsData={settingsData}
         setMediaTypeState={this.setMediaTypeState}
