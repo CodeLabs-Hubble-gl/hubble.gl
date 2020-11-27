@@ -175,6 +175,7 @@ export class ExportVideoPanelContainer extends Component {
         }
         // TODO Add other encoders as needed. Not yet implemented
       }
+      // adapter: new DeckAdapter(this.getDeckScene)
     });
   }
 
