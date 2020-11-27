@@ -219,9 +219,9 @@ export class ExportVideoPanelContainer extends Component {
         handleClose={handleClose}
         // Map Props
         mapData={mapData}
-        setViewState={viewState => {
-          this.setState({viewState});
-        }}
+        // setViewState={viewState => {
+        //   this.setState({viewState});
+        // }} // Unsure what this was for. Unneeded for draggability, which I think this was trying to pass down? 'setViewState' is missing if commented out
         // Settings Props
         settingsData={settingsData}
         setMediaTypeState={this.setMediaTypeState}

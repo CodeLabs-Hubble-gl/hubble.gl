@@ -38,7 +38,8 @@ export class ExportVideoPanelPreview extends Component {
         longitude: 7
       },
       mapStyle: `mapbox://styles/${user}/${mapId}`, // Unsure if mapStyle would ever change but allowing it just in case
-      glContext: undefined
+      glContext: undefined,
+      viewState: this.props.mapData.mapState
     };
 
     this._onLayerSetDomain = this._onLayerSetDomain.bind(this);
@@ -87,8 +88,7 @@ export class ExportVideoPanelPreview extends Component {
   }
 
   onMapLoad() {
-    // console.log('this.mapRef', this.mapRef);
-    // console.log('this.deckRef', this.deckRef);
+    // Adds mapbox layer to modal
     const map = this.mapRef.current.getMap();
     const deck = this.deckRef.current.deck;
     map.addLayer(new MapboxLayer({id: 'my-deck', deck}));
@@ -97,7 +97,7 @@ export class ExportVideoPanelPreview extends Component {
 
   render() {
     // const mapStyle = this.mapData.mapStyle;
-    const mapState = this.props.mapData.mapState;
+    // const mapState = this.props.mapData.mapState;
     // const layers = this.mapData.visState.layers;
     // const layerData = this.mapData.visState.layerData;
     const layerOrder = this.props.mapData.visState.layerOrder;
@@ -123,12 +123,12 @@ export class ExportVideoPanelPreview extends Component {
         .reduce(this._renderLayer, []);
     }
 
-    // const style = { // TODO use this for sizing deckgl canvas. Otherwise results in poor resolution
-    //   position: 'relative',
-    //   // width: this.props.resolution[0],
-    //   // height: this.props.resolution[1],
-    //   objectFit: 'fill'
-    // };
+    const style = {
+      position: 'relative',
+      width: this.props.resolution[0],
+      height: this.props.resolution[1],
+      objectFit: 'fill'
+    };
 
     return (
       // TODO add ternary logic for width/height that'll set aspect ratio of preview in deck-canvas. Or can it be dynamically scaled?
@@ -140,15 +140,16 @@ export class ExportVideoPanelPreview extends Component {
       >
         <DeckGL
           ref={this.deckRef}
-          viewState={mapState}
+          viewState={this.state.viewState}
           id="default-deckgl-overlay2"
           layers={deckGlLayers}
-          // style={style}
+          style={style}
           controller={true}
           glOptions={{stencil: true}}
           onWebGLInitialized={gl => this.setState({glContext: gl})}
-          onViewStateChange={({viewState: vs}) => {
-            this.props.setViewState(vs);
+          // onViewStateChange={vs => {console.log("vs", vs)}}
+          onViewStateChange={vs => {
+            this.setState({viewState: vs.viewState});
           }}
           /* onBeforeRender={this._onBeforeRender} // Not yet
                       onHover={visStateActions.onLayerHover} // Not yet
