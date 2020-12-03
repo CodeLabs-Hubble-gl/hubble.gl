@@ -63,7 +63,14 @@ const INITIAL_VIEW_STATE = {
   id: 'initialViewState'
 };
 
-const landCover = [[[-74.0, 40.7], [-74.02, 40.7], [-74.02, 40.72], [-74.0, 40.72]]];
+const landCover = [
+  [
+    [-74.0, 40.7],
+    [-74.02, 40.7],
+    [-74.02, 40.72],
+    [-74.0, 40.72]
+  ]
+];
 
 /** @type {import('@hubble.gl/core/src/types').FrameEncoderSettings} */
 const encoderSettings = {
@@ -124,13 +131,10 @@ export default function App({
     animation.id = window.requestAnimationFrame(animate);
   };
 
-  useEffect(
-    () => {
-      animation.id = window.requestAnimationFrame(animate);
-      return () => window.cancelAnimationFrame(animation.id);
-    },
-    [animation]
-  );
+  useEffect(() => {
+    animation.id = window.requestAnimationFrame(animate);
+    return () => window.cancelAnimationFrame(animation.id);
+  }, [animation]);
 
   const layers = [
     new PolygonLayer({

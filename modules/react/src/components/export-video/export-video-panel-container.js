@@ -212,15 +212,8 @@ export class ExportVideoPanelContainer extends Component {
       resolution: this.state.quality
     };
 
-    const {
-      adapter,
-      durationMs,
-      encoderSettings,
-      mediaType,
-      canvasWidth,
-      canvasHeight,
-      viewState
-    } = this.state;
+    const {adapter, durationMs, encoderSettings, mediaType, canvasWidth, canvasHeight, viewState} = this.state;
+
     return (
       <ExportVideoPanel
         // UI Props

@@ -94,10 +94,7 @@ class ExportVideo extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withTheme(ExportVideo));
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(ExportVideo));
 // NOTE: This commented out code is here to connect to Redux store in future
 // keplerGlConnect is a wrapper of Redux's standard connect w/ access to Kepler's Redux store
 // export default keplerGlConnect(mapStateToProps, mapDispatchToProps); // Object(...) is not a function

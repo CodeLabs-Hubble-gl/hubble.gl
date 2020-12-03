@@ -134,9 +134,7 @@ function loadRemoteSampleMap(options) {
             loadRemoteResourceError(
               {
                 status,
-                message: `${responseText} - ${LOADING_SAMPLE_ERROR_MESSAGE} ${
-                  options.id
-                } (${configUrl})`
+                message: `${responseText} - ${LOADING_SAMPLE_ERROR_MESSAGE} ${options.id} (${configUrl})`
               },
               configUrl
             )

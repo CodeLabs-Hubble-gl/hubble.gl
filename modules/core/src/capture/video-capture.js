@@ -80,9 +80,7 @@ export class VideoCapture {
     }
     if (this.endTimeMs > sceneLengthMs) {
       throw new Error(
-        `Recording end time (${
-          this.endTimeMs
-        }) cannot be greater then scene length (${sceneLengthMs})`
+        `Recording end time (${this.endTimeMs}) cannot be greater then scene length (${sceneLengthMs})`
       );
     }
     if (parsedSettings.durationMs <= 0) {
