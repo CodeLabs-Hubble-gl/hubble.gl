@@ -6,8 +6,6 @@
     "bootstrap": "yarn clean && yarn"
   },
   "dependencies": {
-    "@deck.gl/mapbox": "^8.3.8",
-    "@hubble.gl/react": "^1.1.0",
     "@luma.gl/debug": "^8.3.1",
     "d3-request": "^1.0.6",
     "global": "^4.3.0",
