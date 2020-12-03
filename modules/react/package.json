@@ -31,7 +31,6 @@
     "build-bundle": "webpack --display=minimal --config ../../scripts/bundle.config.js"
   },
   "dependencies": {
-    "@deck.gl/mapbox": "^8.3.8",
     "@turf/helpers": "^5.1.5",
     "@turf/transform-translate": "^5.1.5",
     "classnames": "^2.2.6",
