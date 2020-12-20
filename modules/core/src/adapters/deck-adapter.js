@@ -32,12 +32,16 @@ export default class DeckAdapter {
   shouldAnimate;
   /** @type {boolean} */
   enabled;
+  /** @type {WebGL2RenderingContext} */
+  glContext;
 
   /**
    * @param {(animationLoop: any) => DeckScene | Promise<DeckScene>} sceneBuilder
+   * @param {WebGL2RenderingContext} glContext
    */
-  constructor(sceneBuilder) {
+  constructor(sceneBuilder, glContext = undefined) {
     this.sceneBuilder = sceneBuilder;
+    this.glContext = glContext;
     this.videoCapture = new VideoCapture();
     this.shouldAnimate = true;
     this.enabled = false;
@@ -54,8 +58,9 @@ export default class DeckAdapter {
    * @param {{ current: { deck: any; }; }} deckRef
    * @param {(ready: boolean) => void} setReady
    * @param {(nextTimeMs: number) => void} onNextFrame
+   * @param {(scene: DeckScene) => any[]} getLayers
    */
-  getProps(deckRef, setReady, onNextFrame = undefined) {
+  getProps(deckRef, setReady, onNextFrame = undefined, getLayers = undefined) {
     const props = {
       onLoad: () =>
         this._deckOnLoad(deckRef.current.deck).then(() => {
@@ -75,38 +80,40 @@ export default class DeckAdapter {
       props.viewState = this._getViewState();
     }
 
-    // Only replace layers when use defines scene layers
+    // Construct layers using callback.
     // TODO: Could potentially concat instead of replace, but layers are supposed to be static.
-    if (this.scene && this.scene.hasLayers()) {
-      props.layers = this._getLayers();
+    if (getLayers) {
+      props.layers = this._getLayers(getLayers);
     }
 
     if (this.scene) {
       props.width = this.scene.width;
       props.height = this.scene.height;
     }
+
+    if (this.glContext) {
+      props.gl = this.glContext;
+    }
     return props;
   }
 
   /**
+   * @param {() => import('../keyframes').CameraKeyframes} getCameraKeyframes
    * @param {typeof import('../encoders').FrameEncoder} Encoder
    * @param {import('types').FrameEncoderSettings} encoderSettings
    * @param {() => void} onStop
-   * @param {(prevCamera: import('../keyframes').CameraKeyframes) => void} updateCamera
+   * @param {() => Object<string, import('../keyframes').Keyframes>} getKeyframes
    */
   render(
+    getCameraKeyframes,
     Encoder = PreviewEncoder,
     encoderSettings = {},
     onStop = undefined,
-    updateCamera = undefined
+    getKeyframes = undefined
   ) {
-    if (updateCamera) {
-      // Optional camera and keyframes defined by the user at runtime
-      this.scene.animationLoop.timeline.detachAnimation(this.scene.currentCamera);
-      this.scene.keyframes.camera = updateCamera(this.scene.keyframes.camera);
-      this.scene.currentCamera = this.scene.animationLoop.timeline.attachAnimation(
-        this.scene.keyframes.camera
-      );
+    this.scene.setCameraKeyframes(getCameraKeyframes());
+    if (getKeyframes) {
+      this.scene.setKeyframes(getKeyframes());
     }
 
     const innerOnStop = () => {
@@ -155,11 +162,11 @@ export default class DeckAdapter {
     return frame;
   }
 
-  _getLayers() {
+  _getLayers(getLayers) {
     if (!this.scene) {
       return [];
     }
-    return this.scene.renderLayers();
+    return this.scene.getLayers(getLayers);
   }
 
   /**

@@ -20,35 +20,35 @@
 
 import React from 'react';
 import styled, {withTheme} from 'styled-components';
-import {IntlProvider} from 'react-intl';
 
-import {messages} from 'kepler.gl/localization';
-import {Button, Icons} from 'kepler.gl/components';
-
-import {DEFAULT_PADDING, DEFAULT_ICON_BUTTON_HEIGHT} from './constants';
+import {
+  DEFAULT_PADDING,
+  DEFAULT_ICON_BUTTON_HEIGHT,
+  DEFAULT_ROW_GAP,
+  DEFAULT_SETTINGS_WIDTH
+} from './constants';
 import ExportVideoPanelSettings from './export-video-panel-settings';
 import {ExportVideoPanelPreview} from './export-video-panel-preview'; // Not yet part of standard library. TODO when updated
 import ExportVideoPanelFooter from './export-video-panel-footer';
 
-const IconButton = styled(Button)`
-  padding: 0;
-  svg {
-    margin: 0;
-  }
-`;
+import {WithKeplerUI} from '../inject-kepler';
 
 const PanelCloseInner = styled.div`
   display: flex;
   justify-content: flex-end;
-  padding: ${DEFAULT_PADDING} ${DEFAULT_PADDING} 0 ${DEFAULT_PADDING};
+  padding: ${DEFAULT_PADDING}px ${DEFAULT_PADDING}px 0 ${DEFAULT_PADDING}px;
 `;
 
 const PanelClose = ({handleClose}) => (
-  <PanelCloseInner className="export-video-panel__close">
-    <IconButton className="export-video-panel__button" link onClick={handleClose}>
-      <Icons.Delete height={DEFAULT_ICON_BUTTON_HEIGHT} />
-    </IconButton>
-  </PanelCloseInner>
+  <WithKeplerUI>
+    {({IconButton, Icons}) => (
+      <PanelCloseInner className="export-video-panel__close">
+        <IconButton className="export-video-panel__button" link onClick={handleClose}>
+          <Icons.Delete height={DEFAULT_ICON_BUTTON_HEIGHT} />
+        </IconButton>
+      </PanelCloseInner>
+    )}
+  </WithKeplerUI>
 );
 
 const StyledTitle = styled.div`
@@ -56,25 +56,26 @@ const StyledTitle = styled.div`
   font-size: 20px;
   font-weight: 400;
   line-height: ${props => props.theme.lineHeight};
-  padding: 0 ${DEFAULT_PADDING} 16px ${DEFAULT_PADDING};
+  padding: 0 ${DEFAULT_PADDING}px 16px ${DEFAULT_PADDING}px;
 `;
 
 const PanelBodyInner = styled.div`
-  padding: 0 ${DEFAULT_PADDING};
+  padding: 0 ${DEFAULT_PADDING}px;
   display: grid;
-  grid-template-columns: 480px auto;
-  grid-template-rows: 460px;
-  grid-column-gap: 20px;
+  grid-template-columns: ${props => props.exportVideoWidth}px ${DEFAULT_SETTINGS_WIDTH}px;
+  grid-template-rows: auto;
+  grid-column-gap: ${DEFAULT_ROW_GAP}px;
 `;
 
 const PanelBody = ({
+  exportVideoWidth,
   mapData,
   adapter,
   setViewState,
   setMediaType,
   setCameraPreset,
   setFileName,
-  setQuality,
+  setResolution,
   settingsData,
   durationMs,
   frameRate,
@@ -83,11 +84,19 @@ const PanelBody = ({
   viewState,
   setDuration
 }) => (
+<<<<<<< HEAD
   <PanelBodyInner className="export-video-panel__body">
+=======
+  <PanelBodyInner className="export-video-panel__body" exportVideoWidth={exportVideoWidth}>
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
     <ExportVideoPanelPreview
       mapData={mapData}
       adapter={adapter}
       setViewState={setViewState}
+<<<<<<< HEAD
+=======
+      exportVideoWidth={exportVideoWidth}
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
       resolution={resolution}
       viewState={viewState}
     />
@@ -95,7 +104,7 @@ const PanelBody = ({
       setMediaType={setMediaType}
       setCameraPreset={setCameraPreset}
       setFileName={setFileName}
-      setQuality={setQuality}
+      setResolution={setResolution}
       settingsData={settingsData}
       durationMs={durationMs}
       frameRate={frameRate}
@@ -103,26 +112,29 @@ const PanelBody = ({
       mediaType={mediaType}
       setDuration={setDuration}
     />
+    {/* TODO: inject additional keyframing tools here */}
   </PanelBodyInner>
 );
 
 const Panel = styled.div`
-  width: ${props => props.exportVideoWidth}px;
+  width: ${props =>
+    props.exportVideoWidth + 2 * DEFAULT_PADDING + DEFAULT_ROW_GAP + DEFAULT_SETTINGS_WIDTH}px;
 `;
 
 const ExportVideoPanel = ({
   // UI Props
   exportVideoWidth,
   handleClose,
+  header,
   // Map Props
   mapData,
   setViewState,
   // Settings Props
   settingsData,
-  setMediaTypeState,
+  setMediaType,
   setCameraPreset,
   setFileName,
-  setQuality,
+  setResolution,
   // Hubble Props
   adapter,
   handlePreviewVideo,
@@ -135,6 +147,7 @@ const ExportVideoPanel = ({
   setDuration
 }) => {
   return (
+<<<<<<< HEAD
     <IntlProvider locale="en" messages={messages.en}>
       <Panel exportVideoWidth={exportVideoWidth} className="export-video-panel">
         <PanelClose handleClose={handleClose} />
@@ -162,6 +175,38 @@ const ExportVideoPanel = ({
         />
       </Panel>
     </IntlProvider>
+=======
+    <Panel exportVideoWidth={exportVideoWidth} className="export-video-panel">
+      {header !== false ? (
+        <>
+          <PanelClose handleClose={handleClose} />
+          <StyledTitle className="export-video-panel__title">Export Video</StyledTitle>
+        </>
+      ) : null}
+      <PanelBody
+        exportVideoWidth={exportVideoWidth}
+        mapData={mapData}
+        adapter={adapter}
+        setMediaType={setMediaType}
+        setCameraPreset={setCameraPreset}
+        setFileName={setFileName}
+        setResolution={setResolution}
+        settingsData={settingsData}
+        setViewState={setViewState}
+        durationMs={durationMs}
+        frameRate={frameRate}
+        resolution={resolution}
+        mediaType={mediaType}
+        viewState={viewState}
+        setDuration={setDuration}
+      />
+      <ExportVideoPanelFooter
+        handleClose={handleClose}
+        handlePreviewVideo={handlePreviewVideo}
+        handleRenderVideo={handleRenderVideo}
+      />
+    </Panel>
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
   );
 };
 

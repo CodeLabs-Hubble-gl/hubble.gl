@@ -21,6 +21,7 @@
 export const DEFAULT_ICON_BUTTON_HEIGHT = '16px';
 export const DEFAULT_BUTTON_HEIGHT = '32px';
 export const DEFAULT_BUTTON_WIDTH = '64px';
+<<<<<<< HEAD
 export const DEFAULT_PADDING = '32px';
 export const DEFAULT_ROW_GAP = '16px';
 
@@ -70,4 +71,76 @@ export function getQualitySettings(label) {
     return HIGHEST_4_3;
   }
   throw new Error(`Unsupported Quality Settings label: ${label}`);
+=======
+export const DEFAULT_PADDING = 32;
+export const DEFAULT_ROW_GAP = 16;
+export const DEFAULT_SETTINGS_WIDTH = 280;
+
+export const DEFAULT_FILENAME = 'kepler.gl';
+
+export const SIDEPANEL_WIDTH = 300;
+
+export const FORMATS = [
+  {
+    value: 'gif',
+    label: 'GIF'
+  },
+  {
+    value: 'webm',
+    label: 'WebM Video'
+  },
+  {
+    value: 'png',
+    label: 'PNG Sequence'
+  },
+  {
+    value: 'jpeg',
+    label: 'JPEG Sequence'
+  }
+];
+
+export const RESOLUTIONS = [
+  {
+    value: '960x540',
+    label: 'Good 16:9 (540p)',
+    width: 960,
+    height: 540
+  },
+  {
+    value: '1280x720',
+    label: 'High 16:9 (720p)',
+    width: 1280,
+    height: 720
+  },
+  {
+    value: '1920x1080',
+    label: 'Highest 16:9 (1080p)',
+    width: 1920,
+    height: 1080
+  },
+  {
+    value: '640x480',
+    label: 'Good 4:3 (480p)',
+    width: 640,
+    height: 480
+  },
+  {
+    value: '1280x960',
+    label: 'High 4:3 (960p)',
+    width: 1280,
+    height: 960
+  },
+  {
+    value: '1920x1440',
+    label: 'Highest 4:3 (1440p)',
+    width: 1920,
+    height: 1440
+  }
+];
+
+export const isResolution = value => option => option.value === value;
+
+export function getResolutionSetting(value) {
+  return RESOLUTIONS.find(isResolution(value)) || RESOLUTIONS[0];
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
 }

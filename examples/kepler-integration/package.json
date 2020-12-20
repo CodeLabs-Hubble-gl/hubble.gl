@@ -5,12 +5,17 @@
     "clean": "rm -rf yarn.lock ./node_modules",
     "bootstrap": "yarn clean && yarn"
   },
+  "peerDependencies": {
+    "@luma.gl/debug": "^8.2.0"
+  },
   "dependencies": {
-    "@luma.gl/debug": "^8.3.1",
     "d3-request": "^1.0.6",
     "global": "^4.3.0",
     "hubble.gl": "^1.1.0",
+<<<<<<< HEAD
     "react-intl": "^3.12.0",
+=======
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
     "react-map-gl": "^5.2.10",
     "react-markdown": "^4.2.2",
     "react-palm": "^3.3.6",

@@ -38,12 +38,67 @@ export class ExportVideoPanelPreview extends Component {
         longitude: 7
       },
       mapStyle: `mapbox://styles/${user}/${mapId}`, // Unsure if mapStyle would ever change but allowing it just in case
+<<<<<<< HEAD
       glContext: undefined
+=======
+      glContext: undefined,
+      memoDevicePixelRatio: window.devicePixelRatio // memoize
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
     };
 
     this._onLayerSetDomain = this._onLayerSetDomain.bind(this);
     this._renderLayer = this._renderLayer.bind(this);
+<<<<<<< HEAD
     this.onMapLoad = this.onMapLoad.bind(this);
+=======
+    this._onMapLoad = this._onMapLoad.bind(this);
+    this._resizeVideo = this._resizeVideo.bind(this);
+    this._getContainerHeight = this._getContainerHeight.bind(this);
+
+    this._resizeVideo();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.resolution !== this.props.resolution) {
+      this._resizeVideo();
+    }
+  }
+
+  componentWillUnmount() {
+    const {memoDevicePixelRatio} = this.state;
+    this._setDevicePixelRatio(memoDevicePixelRatio);
+  }
+
+  _resizeVideo() {
+    const {exportVideoWidth, resolution} = this.props;
+    this._setDevicePixelRatio(resolution[0] / exportVideoWidth);
+    if (this.mapRef.current) {
+      const map = this.mapRef.current.getMap();
+      map.resize();
+    }
+  }
+
+  _setDevicePixelRatio(devicePixelRatio) {
+    /**
+     * TODO: This is the only way to trick mapbox into scaling its render buffer up
+     * to match the desired resolution. It is built to always fit it's render buffer size
+     * to it's CSS container size, which makes it impossible to make a small "preview" box.
+     *
+     * deck.gl has the useDevicePixels prop, which would have been used if it also changed mapbox.
+     * https://github.com/visgl/luma.gl/pull/1155 for background.
+     *
+     * Compare implementations of luma.gl to mapbox for context:
+     * https://github.com/visgl/luma.gl/blob/f622105e30c4dcda434f80ebc4680356003b12fa/modules/gltools/src/utils/device-pixels.js#L31
+     * https://github.com/mapbox/mapbox-gl-js/blob/3136a53235cf17b732e84c9945c4e85ba3369a93/src/ui/map.js#L2324
+     *
+     * In luma the scaler can be overriden by useDevicePixels.
+     *
+     * The workaround is to change window.devicePixelRatio while the component is mounted to scale up the render buffers of deck and mapbox.
+     * This is hacky and can cause issues in certain applications. We should try to produce a better solution.
+     */
+    // @ts-ignore
+    window.devicePixelRatio = devicePixelRatio;
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
   }
 
   _onLayerSetDomain(idx, colorDomain) {
@@ -54,14 +109,19 @@ export class ExportVideoPanelPreview extends Component {
   }
 
   _renderLayer(overlays, idx) {
-    const datasets = this.props.mapData.visState.datasets;
-    const layers = this.props.mapData.visState.layers;
-    const layerData = this.props.mapData.visState.layerData;
-    const hoverInfo = this.props.mapData.visState.hoverInfo;
-    const clicked = this.props.mapData.visState.clicked;
-    const mapState = this.props.mapData.mapState;
-    const interactionConfig = this.props.mapData.visState.interactionConfig;
-    const animationConfig = this.props.mapData.visState.animationConfig;
+    const {
+      mapData: {visState, mapState}
+    } = this.props;
+
+    const {
+      datasets,
+      layers,
+      layerData,
+      hoverInfo,
+      clicked,
+      interactionConfig,
+      animationConfig
+    } = visState;
 
     const layer = layers[idx];
     const data = layerData[idx];
@@ -86,7 +146,17 @@ export class ExportVideoPanelPreview extends Component {
     return overlays.concat(layerOverlay || []);
   }
 
+<<<<<<< HEAD
   onMapLoad() {
+=======
+  _getContainerHeight() {
+    const {exportVideoWidth, resolution} = this.props;
+    const aspectRatio = resolution[0] / resolution[1];
+    return exportVideoWidth / aspectRatio;
+  }
+
+  _onMapLoad() {
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
     // Adds mapbox layer to modal
     const map = this.mapRef.current.getMap();
     const deck = this.deckRef.current.deck;
@@ -133,6 +203,7 @@ export class ExportVideoPanelPreview extends Component {
         .reduce(this._renderLayer, []);
     }
 
+<<<<<<< HEAD
     // const style = {
     //   position: 'relative',
     //   width: this.props.resolution[0],
@@ -151,14 +222,40 @@ export class ExportVideoPanelPreview extends Component {
           id="default-deckgl-overlay2"
           layers={deckGlLayers}
           // style={style}
+=======
+    const deckStyle = {
+      width: '100%',
+      height: '100%'
+    };
+
+    const containerStyle = {
+      width: `${this.props.exportVideoWidth}px`,
+      height: `${this._getContainerHeight()}px`,
+      position: 'relative',
+      overflow: 'auto'
+    };
+
+    return (
+      <div id="deck-canvas" style={containerStyle}>
+        <DeckGL
+          ref={this.deckRef}
+          viewState={this.props.viewState}
+          id="hubblegl-overlay"
+          layers={deckGlLayers}
+          style={deckStyle}
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
           controller={true}
           glOptions={{stencil: true}}
           onWebGLInitialized={gl => this.setState({glContext: gl})}
           onViewStateChange={this.props.setViewState}
+<<<<<<< HEAD
           /* onBeforeRender={this._onBeforeRender} // Not yet
                       onHover={visStateActions.onLayerHover} // Not yet
                       onClick={visStateActions.onLayerClick}*/
 
+=======
+          // onClick={visStateActions.onLayerClick}
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
           {...this.props.adapter.getProps(this.deckRef, () => {})}
         >
           {this.state.glContext && (
@@ -168,7 +265,11 @@ export class ExportVideoPanelPreview extends Component {
               mapStyle={this.state.mapStyle}
               preventStyleDiffing={true}
               gl={this.state.glContext}
+<<<<<<< HEAD
               onLoad={this.onMapLoad}
+=======
+              onLoad={this._onMapLoad}
+>>>>>>> 40e9ca90659ea9c87c091a41897407ffcc85c350
             />
           )}
         </DeckGL>

@@ -27,13 +27,13 @@ import {
   DEFAULT_BUTTON_HEIGHT,
   DEFAULT_BUTTON_WIDTH
 } from './constants';
-import {Button} from 'kepler.gl/components';
+import {WithKeplerUI} from '../inject-kepler';
 
 const PanelFooterInner = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: ${DEFAULT_ROW_GAP};
-  padding: ${DEFAULT_PADDING};
+  margin-top: ${DEFAULT_ROW_GAP}px;
+  padding: ${DEFAULT_PADDING}px;
 `;
 
 const ButtonGroup = styled.div`
@@ -41,36 +41,40 @@ const ButtonGroup = styled.div`
 `;
 
 const ExportVideoPanelFooter = ({handleClose, handlePreviewVideo, handleRenderVideo}) => (
-  <PanelFooterInner className="export-video-panel__footer">
-    <Button
-      width={DEFAULT_BUTTON_WIDTH}
-      height={DEFAULT_BUTTON_HEIGHT}
-      secondary
-      className={'export-video-button'}
-      onClick={handlePreviewVideo}
-    >
-      Preview
-    </Button>
-    <ButtonGroup>
-      <Button
-        width={DEFAULT_BUTTON_WIDTH}
-        height={DEFAULT_BUTTON_HEIGHT}
-        link
-        className={'export-video-button'}
-        onClick={handleClose}
-      >
-        Cancel
-      </Button>
-      <Button
-        width={DEFAULT_BUTTON_WIDTH}
-        height={DEFAULT_BUTTON_HEIGHT}
-        className={'export-video-button'}
-        onClick={handleRenderVideo}
-      >
-        Render
-      </Button>
-    </ButtonGroup>
-  </PanelFooterInner>
+  <WithKeplerUI>
+    {({Button}) => (
+      <PanelFooterInner className="export-video-panel__footer">
+        <Button
+          width={DEFAULT_BUTTON_WIDTH}
+          height={DEFAULT_BUTTON_HEIGHT}
+          secondary
+          className={'export-video-button'}
+          onClick={handlePreviewVideo}
+        >
+          Preview
+        </Button>
+        <ButtonGroup>
+          <Button
+            width={DEFAULT_BUTTON_WIDTH}
+            height={DEFAULT_BUTTON_HEIGHT}
+            link
+            className={'export-video-button'}
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            width={DEFAULT_BUTTON_WIDTH}
+            height={DEFAULT_BUTTON_HEIGHT}
+            className={'export-video-button'}
+            onClick={handleRenderVideo}
+          >
+            Render
+          </Button>
+        </ButtonGroup>
+      </PanelFooterInner>
+    )}
+  </WithKeplerUI>
 );
 
 export default withTheme(ExportVideoPanelFooter);
